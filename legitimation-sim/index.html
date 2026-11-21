@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>教育政策合法化：全班模擬審議</title>
+<!-- ================================================================
+  ★ 設定區：Firebase 設定（已填好）★
+================================================================= -->
+<script>
+window.FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDArVbIFSlNchXqFRjo0DSHM1Ak_Yqa_b4",
+  authDomain: "legitimation-class.firebaseapp.com",
+  projectId: "legitimation-class",
+  storageBucket: "legitimation-class.firebasestorage.app",
+  messagingSenderId: "221238814894",
+  appId: "1:221238814894:web:873a8610aa4c321233e53f"
+};
+// 主持人密碼：勾選「主持人模式」時要輸入（留空 "" 代表不需要密碼）
+window.HOST_PIN = "1234";
+</script>
+<!-- ================== 設定區結束 ================== -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4efe4; --paper2:#ebe3d2; --card:#fffdf8; --ink:#1d2433; --ink2:#4a5263; --mute:#7d8494;
+  --line:#d9cfbb; --seal:#b8322a; --seal-soft:#f3dcd7; --jade:#2f6f5e; --jade-soft:#d9ebe4;
+  --gold:#a7852f; --gold-soft:#f1e6c8; --slate:#5b6475; --navy:#24324f;
+  --opt0:#2f6f5e; --opt1:#b8322a; --opt2:#a7852f; --opt3:#5b6475;
+  --r:14px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Noto Sans TC",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.65;font-size:16px;
+  background-image:radial-gradient(circle at 20% 0%,#fbf7ee 0,transparent 50%),radial-gradient(circle at 100% 100%,#efe6d3 0,transparent 45%);min-height:100vh}
+h1,h2,h3,.serif{font-family:"Noto Serif TC",serif}
+button{font:inherit;cursor:pointer;color:var(--ink)}
+input,select,textarea{font:inherit;color:inherit}
+
+/* header */
+header{padding:22px 28px 14px;display:flex;flex-wrap:wrap;gap:14px 24px;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--line)}
+.brand{display:flex;gap:14px;align-items:center}
+.brand .mark{width:46px;height:46px;border:2.5px solid var(--seal);color:var(--seal);border-radius:6px;display:grid;place-items:center;font-family:"Noto Serif TC";font-weight:900;font-size:15px;line-height:1.05;text-align:center;transform:rotate(-4deg)}
+.brand h1{margin:0;font-size:24px;font-weight:900;letter-spacing:.04em}
+.brand .sub{font-size:13px;color:var(--ink2)}
+.case{flex:1 1 360px;min-width:260px}
+.case label{font-size:12px;color:var(--mute);letter-spacing:.1em}
+.case .title{font-family:"Noto Serif TC";font-weight:900;font-size:20px;color:var(--navy)}
+.case .edit{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.case .edit input{flex:1 1 260px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.case .edit select{padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;max-width:220px}
+.hdr-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;white-space:nowrap}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--mute)}
+.chip.ok .dot{background:var(--jade)} .chip.warn .dot{background:var(--gold)}
+.btn{border:1px solid var(--line);background:var(--card);padding:7px 14px;border-radius:9px;font-size:14px;transition:transform .08s,background .15s}
+.btn:hover{background:#fff}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.primary:hover{background:#1a2640}
+.btn.seal{background:var(--seal);color:#fff;border-color:var(--seal)}
+.btn.ghost{background:transparent}
+.btn.small{padding:4px 10px;font-size:13px}
+.toggle{display:inline-flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--seal);width:16px;height:16px}
+
+/* rail */
+.rail{display:grid;grid-template-columns:4fr 6fr 3fr;gap:12px;padding:18px 28px 6px}
+.phase{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px 12px;position:relative}
+.phase.active{border-color:var(--navy);box-shadow:0 0 0 2px rgba(36,50,79,.12)}
+.phase h3{margin:0;font-size:14px;display:flex;gap:8px;align-items:baseline}
+.phase h3 small{font-family:"Noto Sans TC";font-weight:400;color:var(--mute);font-size:12px}
+.nodes{display:flex;gap:4px;margin-top:9px;align-items:flex-start}
+.node{flex:1;text-align:center;font-size:11.5px;color:var(--mute);position:relative;line-height:1.3}
+.node .b{width:26px;height:26px;border-radius:50%;margin:0 auto 5px;border:2px solid var(--line);background:var(--paper);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--mute);position:relative;z-index:1}
+.node::before{content:"";position:absolute;top:13px;left:-50%;width:100%;height:2px;background:var(--line);z-index:0}
+.node:first-child::before{display:none}
+.node.done .b{background:var(--jade);border-color:var(--jade);color:#fff}
+.node.done{color:var(--ink2)}
+.node.done::before{background:var(--jade)}
+.node.cur .b{background:var(--seal);border-color:var(--seal);color:#fff;box-shadow:0 0 0 5px var(--seal-soft);animation:pulse 1.8s infinite}
+.node.cur{color:var(--ink);font-weight:700}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px var(--seal-soft)}50%{box-shadow:0 0 0 8px rgba(184,50,42,.08)}}
+
+/* main */
+main{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);gap:18px;padding:14px 28px 28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px}
+.stage-head{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.stage-no{font-size:12px;letter-spacing:.14em;color:var(--seal);font-weight:700}
+.stage-head h2{margin:2px 0 4px;font-size:26px;font-weight:900;line-height:1.3}
+.actors{display:flex;gap:6px;flex-wrap:wrap}
+.actor{font-size:12px;padding:2px 9px;border-radius:6px;background:var(--gold-soft);color:#6d5519}
+.desc{margin:12px 0 4px;color:var(--ink2)}
+.book{margin:14px 0;border-left:3px solid var(--gold);background:#faf5e8;padding:9px 13px;border-radius:0 8px 8px 0;font-size:14px;color:#5b4a1d}
+.book b{color:#4a3a10}
+.law{font-size:13px;color:var(--mute);margin-top:6px}
+.prompts{margin:16px 0 6px}
+.prompts h4,.vote h4{margin:0 0 8px;font-size:15px}
+.prompts ol{margin:0;padding-left:22px}
+.prompts li{margin:3px 0}
+.rolehint{margin-top:10px;font-size:14px;background:var(--jade-soft);color:#1f4b3f;padding:8px 12px;border-radius:8px}
+.vote{margin-top:18px;border-top:1px dashed var(--line);padding-top:16px}
+.vote .q{font-family:"Noto Serif TC";font-weight:900;font-size:19px;margin-bottom:10px}
+.opts{display:grid;gap:9px}
+.opt{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1.5px solid var(--line);background:#fff;border-radius:11px;padding:10px 13px;text-align:left;position:relative;overflow:hidden}
+.opt:hover{border-color:var(--ink2)}
+.opt .bar{position:absolute;inset:0 auto 0 0;opacity:.13;transition:width .5s ease;z-index:0}
+.opt > *{position:relative;z-index:1}
+.opt .sw{width:14px;height:14px;border-radius:4px}
+.opt .lbl{font-weight:500}
+.opt .lbl small{display:block;font-weight:400;color:var(--mute);font-size:12.5px}
+.opt .n{font-variant-numeric:tabular-nums;font-weight:700;font-size:18px}
+.opt.mine{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy)}
+.opt.mine::after{content:"我的一票";position:absolute;right:56px;top:50%;transform:translateY(-50%);font-size:11px;background:var(--navy);color:#fff;padding:1px 7px;border-radius:5px;z-index:2}
+.opt[disabled]{cursor:default}
+.voterbox{margin:-2px 0 12px;padding:9px 12px;border-radius:10px;font-size:14px;background:var(--gold-soft);color:#5a4512;display:grid;gap:3px}
+.voterbox span{font-size:12.5px;color:#7d6526}
+.voterbox.yes{background:var(--jade-soft);color:#1f4b3f}
+.voterbox.no{background:#eeeae2;color:var(--ink2)}
+.opt.opinion{border-style:dashed;background:#fbf9f4}
+.opt.mine.opinion::after{content:"我的表態";background:var(--slate)}
+.opt .n small.opn{display:block;font-size:11px;font-weight:400;color:var(--mute);text-align:right}
+.votemeta{font-size:13px;color:var(--mute);margin-top:8px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.host{margin-top:16px;background:#eef0f6;border:1.5px solid #9aa3bb;border-radius:11px;padding:12px 14px;color:var(--ink)}
+.host .btn{background:#fff;color:var(--ink);border-color:#9aa3bb}
+.host .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.host .btn.seal{background:var(--seal);color:#fff;border-color:var(--seal)}
+.host .btn[disabled]{opacity:.45;cursor:default}
+.host h5{margin:0 0 8px;font-size:14px;color:var(--navy);letter-spacing:.08em}
+.host .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}
+.manual{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--ink);background:#fff;border:1px solid #9aa3bb;border-radius:8px;padding:2px 4px 2px 9px}
+.manual button{border:none;color:var(--ink);background:var(--paper2);border-radius:6px;width:24px;height:24px;line-height:1}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:15px;padding:4px 11px;border-radius:8px;background:var(--navy);color:#fff}
+.timer.low{background:var(--seal)}
+
+/* chamber */
+.chamber{margin-bottom:16px}
+.chamber .cap{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+.chamber .cap b{font-family:"Noto Serif TC";font-size:16px}
+.chamber .cap span{font-size:12.5px;color:var(--mute)}
+.chamber svg{width:100%;max-width:560px;display:block;margin:4px auto 0}
+.seat{transition:fill .35s ease}
+.legend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font-size:12.5px;color:var(--ink2)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+
+/* side */
+.side{display:flex;flex-direction:column;gap:18px}
+.disc h3{margin:0;font-size:18px}
+.disc .tabs{display:flex;gap:6px;margin:10px 0}
+.disc .tabs button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:3px 12px;font-size:13px}
+.disc .tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.compose{display:flex;flex-direction:column;gap:8px}
+.compose textarea{width:100%;min-height:74px;resize:vertical;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff}
+.compose .r{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.stance{display:flex;gap:6px}
+.stance label{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;cursor:pointer;background:#fff}
+.stance input{display:none}
+.stance input:checked + span{font-weight:700}
+.stance label:has(input:checked){border-color:var(--ink);background:var(--ink);color:#fff}
+.feed{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:9px;max-height:520px;overflow:auto}
+.feed li{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px}
+.feed .who{font-size:12.5px;color:var(--mute);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.feed .who b{color:var(--ink);font-weight:700}
+.tag{font-size:11.5px;padding:0 7px;border-radius:5px;background:var(--paper2);color:var(--ink2)}
+.tag.pro{background:var(--jade-soft);color:#1f4b3f}.tag.con{background:var(--seal-soft);color:#7b2018}.tag.q{background:var(--gold-soft);color:#6d5519}
+.feed .txt{margin-top:3px;white-space:pre-wrap;word-break:break-word}
+.empty{color:var(--mute);font-size:14px;text-align:center;padding:18px 0}
+.hist ol{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:7px}
+.hist li{display:grid;grid-template-columns:auto 1fr;gap:10px;font-size:14px;align-items:start}
+.hist .k{font-size:11px;color:#fff;background:var(--jade);border-radius:5px;padding:1px 7px;margin-top:3px;white-space:nowrap}
+.hist .k.f{background:var(--seal)}
+.hist small{color:var(--mute)}
+
+/* end panel */
+.decree{background:#fffdf6;border:1px solid #d7c7a3;padding:28px 32px;border-radius:6px;position:relative;box-shadow:0 10px 30px -18px rgba(60,40,10,.4);max-width:560px;margin:10px auto}
+.decree h2{text-align:center;letter-spacing:.5em;margin:0 0 6px;font-size:26px}
+.decree .date{text-align:center;color:var(--mute);font-size:13px;margin-bottom:16px}
+.decree p{font-family:"Noto Serif TC";font-size:18px;margin:8px 0}
+.decree .sign{margin-top:22px;font-family:"Noto Serif TC";font-size:16px;display:grid;gap:4px}
+.decree .stamp{position:absolute;right:30px;bottom:24px}
+.stampbox{border:3px solid var(--seal);color:var(--seal);font-family:"Noto Serif TC";font-weight:900;padding:8px 10px;border-radius:6px;line-height:1.1;font-size:20px;text-align:center;transform:rotate(-8deg);opacity:.88;background:rgba(184,50,42,.04)}
+.outcome{display:flex;gap:10px;align-items:center;font-size:14px;margin:6px 0 0;color:var(--ink2);justify-content:center}
+
+/* overlay */
+.ov{position:fixed;inset:0;background:rgba(18,22,32,.72);display:none;place-items:center;z-index:50;backdrop-filter:blur(2px)}
+.ov.on{display:grid}
+.ov .stage{width:min(760px,94vw);background:var(--paper);border-radius:18px;padding:24px 26px 28px;position:relative;overflow:hidden;text-align:center}
+.ov .stage h3{margin:0 0 4px;font-size:22px}
+.ov .stage .s{color:var(--ink2);font-size:14px}
+.ov .skip{position:absolute;right:14px;top:12px;font-size:12px}
+.travel{position:relative;height:200px;margin-top:14px}
+.bldg{position:absolute;bottom:12px;width:150px;text-align:center;font-family:"Noto Serif TC";font-weight:900}
+.bldg svg{width:110px;height:100px;display:block;margin:0 auto}
+.bldg.l{left:10px}.bldg.r{right:10px}
+.flyx{position:absolute;left:110px;bottom:70px;animation:flyx 2.6s cubic-bezier(.45,.05,.55,.95) forwards}
+.flyy{animation:flyy 2.6s ease-in-out forwards}
+.letter{width:62px;height:44px;background:#fff;border:1.5px solid var(--ink);border-radius:3px;position:relative;display:grid;place-items:center;font-family:"Noto Serif TC";font-weight:900;color:var(--seal);font-size:17px;box-shadow:0 6px 14px -6px rgba(0,0,0,.4)}
+.letter::before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom right,transparent 49%,var(--line) 50%,transparent 51%),linear-gradient(to bottom left,transparent 49%,var(--line) 50%,transparent 51%);background-size:100% 55%;background-repeat:no-repeat;opacity:.9}
+.letter span{position:relative;background:#fff;padding:0 3px}
+@keyframes flyx{from{transform:translateX(0) rotate(-6deg)}to{transform:translateX(calc(min(760px,94vw) - 330px)) rotate(4deg)}}
+@keyframes flyy{0%{transform:translateY(0)}50%{transform:translateY(-95px)}100%{transform:translateY(0)}}
+.ovchamber{max-width:520px;margin:10px auto 0;position:relative}
+.ovchamber svg{width:100%}
+.tallyline{display:flex;justify-content:center;gap:18px;font-size:15px;margin-top:4px;flex-wrap:wrap}
+.tallyline b{font-variant-numeric:tabular-nums;font-size:22px}
+.ovchamber svg{display:block}
+.ovchamber svg.gavel{width:120px;height:60px}
+.gavel{position:absolute;left:calc(55% - 15px);top:calc(83% - 52px);width:120px;height:60px;transform-origin:96.7% 48%;transform:rotate(-40deg);opacity:0}
+.gavel.hit{animation:hit .55s cubic-bezier(.6,0,.9,.4) forwards}
+@keyframes hit{0%{opacity:1;transform:rotate(-40deg)}80%{opacity:1;transform:rotate(3deg)}100%{opacity:1;transform:rotate(0deg)}}
+.ring{position:absolute;left:calc(55% - 15px);top:calc(83% - 15px);width:30px;height:30px;border-radius:50%;border:3px solid var(--gold);opacity:0}
+.ring.go{animation:ring .7s ease-out forwards}
+@keyframes ring{from{opacity:.9;transform:scale(.4)}to{opacity:0;transform:scale(4)}}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translate(0)}25%{transform:translate(-4px,2px)}50%{transform:translate(4px,-2px)}75%{transform:translate(-2px,1px)}}
+.result{margin-top:14px;display:inline-block;opacity:0;transform:scale(2.2) rotate(-8deg)}
+.result.go{animation:stamp .45s cubic-bezier(.2,1.4,.5,1) forwards}
+@keyframes stamp{to{opacity:1;transform:scale(1) rotate(-8deg)}}
+.result .stampbox{font-size:30px;padding:10px 18px}
+.result.fail .stampbox{border-color:var(--slate);color:var(--slate)}
+.paperup{animation:paperup .9s ease-out both}
+@keyframes paperup{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+.bigseal{position:absolute;right:46px;bottom:30px;opacity:0;transform:scale(2.6) rotate(-10deg)}
+.bigseal.go{animation:stamp2 .5s cubic-bezier(.2,1.4,.5,1) forwards}
+@keyframes stamp2{to{opacity:.92;transform:scale(1) rotate(-10deg)}}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(18,22,32,.55);display:none;place-items:center;z-index:40}
+.modal.on{display:grid}
+.modal .box{background:var(--card);border-radius:16px;padding:24px 24px 20px;width:min(520px,94vw)}
+.modal h3{margin:0 0 4px;font-size:21px}
+.modal p{margin:0 0 14px;color:var(--ink2);font-size:14px}
+.modal input[type=text]{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;margin-bottom:12px}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.roles label{border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:14px;background:#fff}
+.roles label small{display:block;color:var(--mute);font-size:12px;line-height:1.35}
+.roles input{display:none}
+.roles label:has(input:checked){border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);background:#f3f5fa}
+
+.banner{margin:14px 28px 0;padding:12px 16px;border-radius:12px;background:#fbe9e6;border:1.5px solid var(--seal);color:#6d1f18;font-size:14.5px}
+.banner b{color:var(--seal)}
+.banner ol{margin:6px 0 4px;padding-left:22px}
+.banner.info{background:var(--gold-soft);border-color:var(--gold);color:#5a4512}
+.banner.info b{color:#5a4512}
+@media (max-width:980px){.banner{margin:12px 16px 0}}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:9px 16px;border-radius:10px;font-size:14px;opacity:0;transition:.25s;z-index:60;pointer-events:none;max-width:90vw}
+.toast.on{opacity:1;transform:translateX(-50%)}
+footer{padding:0 28px 26px;color:var(--mute);font-size:12.5px}
+[hidden]{display:none!important}
+
+@media (max-width:980px){
+  main{grid-template-columns:1fr}
+  .rail{grid-template-columns:1fr}
+  header{padding:16px}
+  main,.rail{padding-left:16px;padding-right:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01s!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="mark">合法<br>化</div>
+    <div>
+      <h1>教育政策合法化・全班模擬審議</h1>
+      <div class="sub">《教育政策學》第九章 專書導讀互動活動</div>
+    </div>
+  </div>
+  <div class="case">
+    <label>本次審議案</label>
+    <div class="title" id="caseTitle">—</div>
+    <div class="edit" id="caseEdit" hidden>
+      <input id="caseInput" type="text" placeholder="輸入要模擬的政策／法案名稱">
+      <select id="casePreset"><option value="">— 範例案名 —</option></select>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <span class="chip" id="connChip"><span class="dot"></span><span id="connText">連線中…</span></span>
+    <button class="chip" id="meChip" title="更改暱稱或角色">👤 <span id="meText">加入審議</span></button>
+    <label class="toggle"><input type="checkbox" id="hostToggle"> 主持人模式</label>
+  </div>
+</header>
+
+<div class="banner" id="banner" hidden></div>
+<section class="rail" id="rail"></section>
+
+<main>
+  <div>
+    <section class="card chamber" id="chamberCard" hidden>
+      <div class="cap"><b>立法院議場</b><span id="chamberCap">以立委同學的即時投票換算為 113 席</span></div>
+      <svg id="chamberSvg" viewBox="0 0 420 212" role="img" aria-label="立法院 113 席議場示意"></svg>
+      <div class="legend" id="chamberLegend"></div>
+    </section>
+    <section class="card" id="stageCard"></section>
+  </div>
+  <aside class="side">
+    <section class="card disc">
+      <h3>討論區</h3>
+      <div class="tabs">
+        <button data-act="feed-cur" class="on" id="tabCur">本階段</button>
+        <button data-act="feed-all" id="tabAll">全部紀錄</button>
+        <button data-act="copy-log" class="btn small ghost" style="margin-left:auto">複製紀錄</button>
+      </div>
+      <form class="compose" id="compose">
+        <textarea id="msg" placeholder="以你的角色發表看法、提出質詢或修正建議…" maxlength="300"></textarea>
+        <div class="r">
+          <div class="stance">
+            <label><input type="radio" name="st" value="pro"><span>支持</span></label>
+            <label><input type="radio" name="st" value="con"><span>反對</span></label>
+            <label><input type="radio" name="st" value="q"><span>提問</span></label>
+            <label><input type="radio" name="st" value="" checked><span>一般</span></label>
+          </div>
+          <button class="btn primary small" type="submit">發言</button>
+        </div>
+      </form>
+      <ul class="feed" id="feed"></ul>
+    </section>
+    <section class="card hist">
+      <h3 style="margin:0;font-size:18px">審議歷程</h3>
+      <ol id="hist"></ol>
+    </section>
+  </aside>
+</main>
+<footer>流程依據：教科書第九章「教育政策合法化」圖 9-1、圖 9-2（引自立法院立法程序）；憲法第 37、58、72 條、憲法增修條文第 3 條、中央法規標準法第 5、7、13 條。本頁為課堂模擬，議場席次以全班投票比例換算，非真實表決。</footer>
+
+<!-- join modal -->
+<div class="modal" id="joinModal">
+  <form class="box" id="joinForm">
+    <h3 class="serif">加入審議</h3>
+    <p>輸入你的暱稱並選一個角色，討論時請從這個角色的立場發言。<br><b>注意：</b>行政部門階段全班都可投票；法案送進立法院後，只有<b>執政黨立委、在野黨立委</b>有表決權（覆議前「是否移請覆議」由行政院政務委員、教育部官員決定）。建議全班約一半同學擔任立委。</p>
+    <input type="text" id="nickInput" placeholder="暱稱（例如：小明、第3組）" maxlength="16" required>
+    <div class="roles" id="roleList"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px">
+      <button type="button" class="btn ghost" data-act="close-join">先旁觀</button>
+      <button type="submit" class="btn primary">加入</button>
+    </div>
+  </form>
+</div>
+
+<!-- animation overlay -->
+<div class="ov" id="ov"><div class="stage" id="ovStage"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ 內容資料 ============ */
+const PRESETS = [
+  "國民中小學校園數位載具使用管理條例草案（虛擬案例）",
+  "學校型態實驗教育實施條例修正草案（呼應導讀期刊）",
+  "國民教育法修正草案：調降國中小班級人數上限（虛擬案例）",
+  "高級中等以下學校學生申訴保障條例草案（虛擬案例）"
+];
+
+const ROLES = [
+  {k:"moe",  name:"教育部官員",   d:"草案主責機關", hint:"說明政策目的、可行性與經費來源，回應各方質疑。"},
+  {k:"ey",   name:"行政院政務委員", d:"跨部會審查", hint:"從預算、跨部會協調與整體施政優先順序把關。"},
+  {k:"rul",  name:"執政黨立委",   d:"立法院", hint:"支持政府提案，但要回應選區與黨團協商壓力。"},
+  {k:"opp",  name:"在野黨立委",   d:"立法院", hint:"監督與質詢，提出修正動議，指出草案漏洞。"},
+  {k:"tch",  name:"教師團體",     d:"利害關係人", hint:"關注教師工作負擔、專業自主與權利義務。"},
+  {k:"par",  name:"家長團體",     d:"利害關係人", hint:"關注孩子的受教權、安全與家長參與權。"},
+  {k:"stu",  name:"學生代表",     d:"利害關係人", hint:"以學習者的學習權與受教育權為中心發聲。"},
+  {k:"aca",  name:"學者專家",     d:"專業社群", hint:"提供研究證據、影響評估與國際比較。"},
+];
+
+const STAGES = {
+  s1:{no:1, phase:"A", short:"草案研擬", title:"政策提案與草案研擬", actors:["教育部","各司署","法制處"],
+    desc:"教育部針對教育問題研擬政策方案。第一個關鍵判斷是：這項政策要用「法律」還是「命令」來合法化？涉及人民權利義務或重要事項者應以法律定之；其餘可由教育部依職權或授權訂定法規命令、行政規則。",
+    book:"<b>課本對照｜圖 9-1</b>：教育政策 →（1）憲法或法律明文規定應以法律規定者、人民之教育權利義務、國家教育機關組織、其他重要事項 → <b>教育法律</b>；（2）基於授權訂定的法規命令、機關內部行政規則 → <b>教育命令</b>。",
+    law:"依據：中央法規標準法第 5 條",
+    prompts:["這個政策是否涉及學生、家長或教師的權利義務？","只用命令規範，在「穩定性」與「強制性」上會有什麼風險？","誰會因為這項政策受益？誰可能受損？"],
+    vote:{q:"本政策應以哪一種形式完成合法化？", options:[
+      {k:"law", label:"制定教育法律", sub:"須經行政院、立法院三讀與總統公布", next:"s2"},
+      {k:"order", label:"訂定教育命令", sub:"由教育部發布，並送立法院查照", next:"END_ORDER"}]}},
+  s2:{no:2, phase:"A", short:"意見蒐集", title:"意見蒐集：草案預告與公聽會", actors:["教育部","教師","家長","學生","學者","民間團體"],
+    desc:"草案公開預告，並透過公聽會、座談會蒐集各界意見。這是民眾參與教育政策合法化的關鍵窗口，也是爭議最早浮現的地方。",
+    book:"<b>課本對照｜本章摘要</b>：合法化的問題之一是「社會民眾參與教育立法的制度有待改善」；展望則包括「建立民眾參與教育政策合法化的制度」。",
+    law:"依據：行政程序法（法規草案預告、聽證與意見陳述）",
+    prompts:["請各角色在公聽會上用一句話表達立場。","哪一方的聲音最容易被忽略？為什麼？","草案應該怎麼修改，才能回應最主要的反對意見？"],
+    vote:{q:"草案是否已充分回應各方意見？", options:[
+      {k:"ok", label:"可以，進入部內法制審查", next:"s3"},
+      {k:"redo", label:"不夠，退回重新研擬", next:"s1"}]}},
+  s3:{no:3, phase:"A", short:"部務會議", title:"部內法制作業：法規會審查與部務會議", actors:["教育部法規會","部務會議"],
+    desc:"草案經教育部法規委員會審查條文用語、法律體系一致性，再提部務會議討論通過，才能陳報行政院。",
+    book:"<b>課本對照｜合法化的問題</b>：「教育行政機關立法的作業準備不周」；展望：「聘請專業人員參與教育法案的研擬與進行影響評估」。",
+    law:"",
+    prompts:["條文用語是否明確、可執行？","經費與人力從哪裡來？有沒有做影響評估？","與現行的教育基本法或其他法律有沒有衝突？"],
+    vote:{q:"部務會議是否通過草案、陳報行政院？", options:[
+      {k:"ok", label:"通過，陳報行政院", next:"s4"},
+      {k:"back", label:"退回，再修正條文", next:"s1"}]}},
+  s4:{no:4, phase:"A", short:"行政院院會", title:"行政院院會審議", actors:["行政院院會","政務委員","主計總處"],
+    desc:"教育部將法律案陳報行政院，經政務委員審查會協調各部會意見後，提行政院院會討論。院會決議通過後，才會函請立法院審議。",
+    book:"<b>課本對照｜教育政策合法化的意義</b>：教育部擬訂之教育法律案，經完成部內一定程序後，陳報行政院審議和轉送立法院。",
+    law:"依據：憲法第 58 條（行政院會議議決法律案）",
+    prompts:["從整體施政來看，這個法案的優先順序高嗎？","需要多少預算？財政部、主計總處會支持嗎？","如果送進立法院，最可能在哪裡卡關？"],
+    vote:{q:"★ 是否將本法律案函送立法院審議？", options:[
+      {k:"send", label:"通過，函請立法院審議", next:"s5"},
+      {k:"back", label:"退回教育部再研議", next:"s1"}]}},
+  s5:{no:5, phase:"B", short:"程序委員會", title:"程序委員會：編列議程", actors:["立法院程序委員會"],
+    desc:"法律案送達立法院後，先由程序委員會編列議程，列入院會「報告事項」。程序委員會常被稱為議案的守門人，能決定法案何時排入院會。",
+    book:"<b>課本對照｜圖 9-2</b>：提案來源（行政院、司法院、考試院、監察院、立法委員／黨團）→ 程序委員會（編列議程、報告事項、討論事項）。",
+    law:"",
+    prompts:["為什麼說程序委員會是「守門人」？","在野黨可能用什麼方式讓法案暫緩排入議程？"],
+    vote:{q:"是否將本案列入院會議程？", options:[
+      {k:"list", label:"列入議程", next:"s6"},
+      {k:"hold", label:"暫緩列案", sub:"下次程序委員會再議", next:"s5"}]}},
+  s6:{no:6, phase:"B", short:"一讀會", title:"一讀會", actors:["立法院院會"],
+    desc:"院會宣讀法案標題後，決定交付相關委員會審查、逕付二讀，或不予審議。",
+    book:"<b>課本對照｜圖 9-2</b>：一讀會（宣讀標題）→ 交付審查會，或經院會討論後逕付二讀，或不予審議。",
+    law:"",
+    prompts:["本案爭議大嗎？適合「逕付二讀」嗎？","交付委員會審查有什麼好處？"],
+    vote:{q:"一讀會後，本案如何處理？", options:[
+      {k:"cmte", label:"交付教育及文化委員會審查", next:"s7"},
+      {k:"direct", label:"逕付二讀", next:"s9"},
+      {k:"reject", label:"不予審議", next:"END_FAIL"}]}},
+  s7:{no:7, phase:"B", short:"委員會審查", title:"委員會審查（教育及文化委員會）", actors:["教育及文化委員會","教育部長","學者專家"],
+    desc:"委員會邀請教育部長列席報告、接受委員詢答，必要時舉行公聽會，接著逐條審查、修正並提出審查報告。審查會可以決議須交由黨團協商。",
+    book:"<b>課本對照｜圖 9-2</b>：審查會（聽取報告、討論、修正、審查報告）。合法化的問題：「學術專業團體對教育立法的影響力不大」。",
+    law:"",
+    prompts:["在野黨立委：請提出一條具體的修正條文。","教育部官員：哪一條是政府絕對不能讓步的？","學者專家：有什麼研究證據支持或反對本案？"],
+    vote:{q:"委員會審查結果為何？", options:[
+      {k:"done", label:"審查完竣，不須黨團協商", next:"s9"},
+      {k:"nego", label:"審查完竣，部分條文保留交黨團協商", next:"s8"}]}},
+  s8:{no:8, phase:"B", short:"黨團協商", title:"黨團協商", actors:["各黨團","立法院院長"],
+    desc:"由院長召集各黨團代表協商爭議條文。協商結論經院會同意後，出席委員不得反對。",
+    book:"<b>課本對照｜圖 9-2 註</b>：黨團協商結論，經院會同意後，出席委員不得反對。展望：「教育立法過程人員參與多元化與資訊應公開化」。",
+    law:"",
+    prompts:["黨團協商是「效率」還是「黑箱」？","協商時，執政黨與在野黨各自能讓步什麼？"],
+    vote:{q:"黨團協商結果？", options:[
+      {k:"agree", label:"達成協商結論", next:"s9"},
+      {k:"fail", label:"協商未果，回歸院會表決", next:"s9"}]}},
+  s9:{no:9, phase:"B", short:"二讀會", title:"二讀會", actors:["立法院院會"],
+    desc:"朗讀議案、宣讀審查報告，進行廣泛討論與逐條討論，處理修正動議。二讀會中也可決議重付審查或撤回。",
+    book:"<b>課本對照｜圖 9-2</b>：二讀會（朗讀議案、宣讀審查報告、說明或質疑、宣讀協商討論、廣泛討論、依次逐條討論、修正動議、復議）→ 撤回。",
+    law:"",
+    prompts:["逐條討論時，最具爭議的是哪一條？","有人提出修正動議：你支持嗎？理由是什麼？"],
+    vote:{q:"二讀會結果？", options:[
+      {k:"pass", label:"完成二讀", next:"s10"},
+      {k:"recmte", label:"重付委員會審查", next:"s7"},
+      {k:"withdraw", label:"撤回", next:"END_WITHDRAW"}]}},
+  s10:{no:10, phase:"B", short:"三讀會", title:"三讀會：全案付表決", actors:["立法院院會"],
+    desc:"三讀會除發現議案內容互相牴觸，或與憲法、其他法律相牴觸外，只得為文字修正，接著全案付表決。",
+    book:"<b>課本對照｜圖 9-2</b>：三讀會（文字修正、全案付表決、復議）→ 通過／不通過。",
+    law:"",
+    prompts:["最後表決前，請各黨立委做 30 秒結辯。","如果你是立委，你會按下贊成還是反對？"],
+    vote:{q:"★ 本法律案三讀表決", options:[
+      {k:"yes", label:"贊成，三讀通過", next:"s11"},
+      {k:"no", label:"反對，不通過", next:"END_FAIL"}]}},
+  s11:{no:11, phase:"C", short:"咨請公布", title:"咨請總統公布／是否移請覆議", actors:["立法院","總統","行政院"],
+    desc:"法律案通過後，立法院咨請總統公布並函送行政院。總統應於收到後 10 日內公布；行政院若認為窒礙難行，得經總統核可，於送達 10 日內移請立法院覆議。",
+    book:"<b>課本對照｜圖 9-2</b>：通過 → 咨請總統公布、函復（或函送）行政院等機關 → 認為窒礙難行，經總統核可可移請立法院覆議。",
+    law:"依據：憲法第 72 條、憲法增修條文第 3 條",
+    prompts:["三讀通過的版本，跟行政院原本的草案差多少？","行政院有理由認為「窒礙難行」嗎？"],
+    vote:{q:"行政院的態度？", options:[
+      {k:"ok", label:"無異議，由總統公布", next:"s13"},
+      {k:"veto", label:"窒礙難行，移請立法院覆議", next:"s12"}]}},
+  s12:{no:12, phase:"C", short:"覆議", title:"覆議案（回到立法院）", actors:["全院委員會","立法院院會"],
+    desc:"立法院應於覆議案送達 15 日內作成決議：先由全院委員會審查（得邀請行政院院長列席說明），再由院會記名投票。經全體立法委員二分之一以上（至少 57 席）決議維持原案，行政院院長應即接受；逾期未議決者，原決議失效。",
+    book:"<b>課本對照｜圖 9-2</b>：覆議案 → 全院委員會（審查是否維持決議）→ 院會（記名投票表決，送達十五日內）→ 維持原決議／不維持原決議／逾期未作成決議，原決議失效。",
+    law:"依據：憲法增修條文第 3 條第 2 項第 2 款",
+    prompts:["行政院院長列席說明：為什麼窒礙難行？","立委：要維持原決議，還是接受行政院的意見？"],
+    vote:{q:"★ 覆議表決：是否維持原決議？", threshold:57, options:[
+      {k:"keep", label:"維持原決議", sub:"需全體立委二分之一以上", next:"s13"},
+      {k:"drop", label:"不維持原決議", sub:"原決議失效", next:"END_FAIL"}]}},
+  s13:{no:13, phase:"C", short:"總統公布", title:"總統公布", actors:["總統","行政院院長（副署）"],
+    desc:"總統依法公布法律，須經行政院院長副署。法律自公布之日起算至第三日起發生效力（法規特定施行日期者，從其規定）。",
+    book:"<b>課本對照｜本章摘要</b>：教育法律方面的合法化過程包括：1. 提案；2. 一讀會；3. 審查會；4. 二讀會；5. 三讀會；6. <b>公布</b>。",
+    law:"依據：憲法第 37 條、中央法規標準法第 13 條",
+    prompts:["法律公布後，教育部還需要訂定哪些子法（施行細則、辦法）？","怎麼讓學校與家長知道這個新法？（課本展望：對適用對象行銷以廣為週知）"],
+    vote:null}
+};
+const ORDER = ["s1","s2","s3","s4","s5","s6","s7","s8","s9","s10","s11","s12","s13"];
+const PHASES = [
+  {id:"A", name:"行政部門", sub:"教育部 → 行政院", stages:["s1","s2","s3","s4"]},
+  {id:"B", name:"立法院", sub:"程序委員會 → 三讀", stages:["s5","s6","s7","s8","s9","s10"]},
+  {id:"C", name:"公布", sub:"總統府・覆議", stages:["s11","s12","s13"]}
+];
+const LY_STAGES = ["s5","s6","s7","s8","s9","s10","s12"];
+const FLOOR_VOTES = ["s6","s9","s10","s12"];
+const ENDS = {
+  END_PASS:{title:"法律公布施行", kind:"pass"},
+  END_ORDER:{title:"以教育命令發布", kind:"order"},
+  END_FAIL:{title:"法案未通過", kind:"fail"},
+  END_WITHDRAW:{title:"法案撤回", kind:"fail"}
+};
+const SEATS = 113;
+const OPT_COLORS = ["var(--opt0)","var(--opt1)","var(--opt2)","var(--opt3)"];
+const OPT_HEX = ["#2f6f5e","#b8322a","#a7852f","#5b6475"];
+
+/* ============ 狀態 ============ */
+function defaultState(){ return {epoch:1, stage:"s1", round:1, caseTitle:PRESETS[0], history:[], manual:{}, timerEnd:0}; }
+let S = defaultState();
+let ballots = {};      // uid -> {nick, role, votes}
+let comments = [];     // newest first
+let pendingMsgs = [];  // 等待主持人轉送的發言
+let me = {uid:null, nick:"", role:""};
+let db = null, userApi = null, mode = "connecting", canWrite = true;
+let presenter = false, feedMode = "cur", stateLoaded = false;
+let stateRef = null, writeChain = Promise.resolve(), ballotChain = Promise.resolve();
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const isEnd = k => k && k.startsWith("END_");
+const phaseOf = k => isEnd(k) ? "Z" : STAGES[k].phase;
+const voteKey = (st=S) => `${st.epoch}:${st.stage}:${st.round}`;
+const roleName = k => (ROLES.find(r=>r.k===k)||{}).name || "旁聽";
+
+function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("on"); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove("on"),2600); }
+
+try{ const saved = JSON.parse(localStorage.getItem("legit-me")||"{}"); me.nick = saved.nick||""; me.role = saved.role||""; presenter = !!saved.presenter; }catch(e){}
+function saveLocal(){ try{ localStorage.setItem("legit-me", JSON.stringify({nick:me.nick, role:me.role, presenter})); }catch(e){} }
+
+/* ============ 計票 ============ */
+/* 各階段有表決權的角色（null = 全班皆可投票） */
+const LEGISLATORS = ["rul","opp"];
+const VOTERS = {s5:LEGISLATORS, s6:LEGISLATORS, s7:LEGISLATORS, s8:LEGISLATORS, s9:LEGISLATORS, s10:LEGISLATORS, s12:LEGISLATORS, s11:["ey","moe"]};
+const VOTER_NOTE = {s11:"本階段由行政院決定是否移請覆議（行政院政務委員、教育部官員）"};
+const voters = stage => VOTERS[stage] || null;
+const canVoteRole = (role, stage=S.stage) => { const v=voters(stage); return !v || v.includes(role); };
+const active = () => Object.values(ballots).filter(b=>b && b.nick && b.epoch===S.epoch);
+function tally(st=S, opinion=false){
+  const stg = STAGES[st.stage]; const c = {};
+  if(!stg || !stg.vote) return c;
+  stg.vote.options.forEach(o=>c[o.k]=0);
+  const key = voteKey(st); const vs = voters(st.stage);
+  Object.values(ballots).forEach(b=>{
+    const v=b && b.votes && b.votes[key]; if(!v || !(v in c)) return;
+    const eligible = !vs || vs.includes(b.role);
+    if(eligible !== opinion) c[v]++;
+  });
+  if(opinion) return c;
+  const m = (st.manual||{})[key] || {};
+  Object.keys(c).forEach(k=>{ c[k] += Math.max(0, +m[k]||0); });
+  return c;
+}
+function allocSeats(counts, opts){
+  const total = opts.reduce((a,o)=>a+(counts[o.k]||0),0);
+  if(!total) return opts.map(()=>0);
+  const raw = opts.map(o=>SEATS*(counts[o.k]||0)/total);
+  const base = raw.map(Math.floor); let rem = SEATS - base.reduce((a,b)=>a+b,0);
+  raw.map((r,i)=>[r-base[i],i]).sort((a,b)=>b[0]-a[0]).slice(0,rem).forEach(([,i])=>base[i]++);
+  return base;
+}
+
+/* ============ 寫入 ============ */
+function saveState(n){
+  if(mode!=="online"){ applyState(n); return; }
+  if(!canWrite){ toast("你目前只有檢視權限，無法變更流程"); return; }
+  writeChain = writeChain.then(()=>stateRef.set(n)).catch(e=>{
+    if(e && e.code==="invalid_argument"){ canWrite=false; toast("沒有寫入權限：請擁有者把你設為 Contributor 以上"); }
+    else toast("儲存失敗，請稍後再試");
+  });
+}
+function castVote(k){
+  if(mode==="offline"){ toast("你還沒連上全班審議室，請看畫面上方的說明"); return; }
+  if(mode==="connecting"){ toast("正在連線，請稍候再投票"); return; }
+  if(!me.nick){ openJoin(); return; }
+  const key = voteKey();
+  if(mode==="online" && useRelay){ relayVote(key,k); return; }
+  const mine = ballots[me.uid] ? JSON.parse(JSON.stringify(ballots[me.uid])) : {votes:{}};
+  mine.nick = me.nick; mine.role = me.role; mine.epoch = S.epoch; mine.votes = mine.votes || {};
+  if(mine.votes[key]===k) delete mine.votes[key]; else mine.votes[key]=k;
+  // 只保留本輪 epoch 的票，避免文件無限增長
+  Object.keys(mine.votes).forEach(x=>{ if(!x.startsWith(S.epoch+":")) delete mine.votes[x]; });
+  ballots[me.uid] = mine; render();
+  if(mode==="online"){
+    ballotChain = ballotChain.then(()=>db.doc("ballots/"+me.uid).set(mine)).catch(e=>{
+      if(e && e.code==="invalid_argument"){ switchToRelay(); if(useRelay) relayVote(key,k,true); else toast("你目前只有觀看權限，無法投票"); }
+      else toast("投票未送出，請再按一次");
+    });
+  }
+}
+/* ---- 經由主持人轉送（給只有檢視權限的同學）---- */
+let room=null, useRelay=false, isOwnerFlag=false;
+const myRelay = {votes:{}, msgs:[]};
+function switchToRelay(){
+  if(!room){ useRelay=false; return; }
+  if(!useRelay){ useRelay=true; if(me.uid && ballots[me.uid]){ const b=ballots[me.uid]; Object.assign(myRelay.votes, b.votes||{}); } pushPresence(); render(); }
+}
+function pushPresence(){
+  if(!room) return;
+  Object.keys(myRelay.votes).forEach(x=>{ if(!x.startsWith(S.epoch+":")) delete myRelay.votes[x]; });
+  const p = isOwnerFlag ? {host:true} : useRelay ? {relay:true, nick:me.nick, role:me.role, epoch:S.epoch, votes:myRelay.votes, msgs:myRelay.msgs} : {direct:true};
+  room.presence(p).catch(()=>{});
+}
+function relayVote(key,k,force){
+  if(!room){ toast("你目前只有觀看權限，無法投票"); return; }
+  if(!force && myRelay.votes[key]===k) delete myRelay.votes[key]; else myRelay.votes[key]=k;
+  pushPresence(); render();
+  if(!hostOnline()) toast("你的票已送出，等主持人上線後會自動計入");
+}
+function hostOnline(){ try{ return !!(room && room.peers().some(p=>!p.isMe && p.presence && p.presence.host)); }catch(e){ return false; } }
+/* 主持人端：把同學的 presence 寫進共享資料 */
+const relayed = {ballots:{}, msgs:new Set()};
+const SAFE = /^[A-Za-z0-9_.~:@+-]{1,120}$/;
+let relayChains = {};
+function relayPeer(p){
+  if(!isOwnerFlag || !db || p.isMe || p.kind!=="viewer") return;
+  const pr = p.presence || {}; if(!pr.relay || typeof pr.nick!=="string" || !pr.nick) return;
+  const id = p.by && SAFE.test(p.by) ? p.by : ("peer-"+String(p.peer).replace(/[^A-Za-z0-9_-]/g,"").slice(0,60));
+  const role = ROLES.some(r=>r.k===pr.role) ? pr.role : "";
+  const votes = {}; if(pr.votes && typeof pr.votes==="object") Object.entries(pr.votes).slice(0,60).forEach(([k,v])=>{ if(typeof k==="string" && k.length<40 && typeof v==="string" && v.length<20) votes[k]=v; });
+  const doc = {nick:pr.nick.slice(0,16), role, epoch:+pr.epoch||0, votes, relayed:true};
+  const sig = JSON.stringify(doc);
+  if(relayed.ballots[id]!==sig && !(ballots[id] && !ballots[id].relayed)){
+    relayed.ballots[id]=sig;
+    relayChains[id] = (relayChains[id]||Promise.resolve()).then(()=>db.doc("ballots/"+id).set(doc)).catch(()=>{ relayed.ballots[id]=null; });
+  }
+  (Array.isArray(pr.msgs)?pr.msgs:[]).slice(-3).forEach(m=>{
+    if(!m || typeof m.id!=="string" || !/^m[a-z0-9]{6,30}$/.test(m.id) || relayed.msgs.has(m.id)) return;
+    if(comments.some(c=>c.id===m.id)){ relayed.msgs.add(m.id); return; }
+    relayed.msgs.add(m.id);
+    const st = STAGES[m.stage] ? m.stage : S.stage;
+    db.collection("comments").doc(m.id).set({uid:id, nick:doc.nick, role, epoch:+m.epoch||S.epoch, stage:st, round:+m.round||0, key:String(m.key||"").slice(0,40),
+      stance:["pro","con","q",""].includes(m.stance)?m.stance:"", text:String(m.text||"").slice(0,300), ts:+m.ts||Date.now(), relayed:true}).catch(()=>relayed.msgs.delete(m.id));
+  });
+}
+function saveProfile(){
+  saveLocal();
+  if(useRelay){ pushPresence(); render(); return; }
+  if(!me.uid) return;
+  const mine = ballots[me.uid] ? JSON.parse(JSON.stringify(ballots[me.uid])) : {votes:{}};
+  mine.nick = me.nick; mine.role = me.role; mine.epoch = S.epoch; ballots[me.uid] = mine;
+  if(mode==="online") ballotChain = ballotChain.then(()=>db.doc("ballots/"+me.uid).set(mine)).catch(()=>{});
+  render();
+}
+async function postComment(text, stance){
+  if(!me.nick){ openJoin(); return; }
+  if(mode==="offline"||mode==="connecting"){ toast("你還沒連上全班審議室，無法發言"); return false; }
+  const c = {uid:me.uid||"local", nick:me.nick, role:me.role, epoch:S.epoch, stage:S.stage, round:S.round, key:voteKey(), stance, text, ts:Date.now()};
+  const relayMsg = ()=>{
+    if(!room){ toast("你目前只有觀看權限，無法發言"); return false; }
+    const m = {...c, id:"m"+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}; delete m.uid; delete m.nick; delete m.role;
+    myRelay.msgs = [...myRelay.msgs, m].slice(-3); pendingMsgs.push({...c, id:m.id, pending:true}); pushPresence(); renderFeed();
+    if(!hostOnline()) toast("發言已送出，等主持人上線後會出現在討論區");
+    return true;
+  };
+  if(mode==="online" && useRelay) return relayMsg();
+  if(mode==="online"){
+    try{ await db.collection("comments").add(c); }
+    catch(e){
+      if(e && e.code==="invalid_argument"){ switchToRelay(); if(useRelay) return relayMsg(); toast("你目前只有觀看權限，無法發言"); return false; }
+      toast(e&&e.code==="quota_exceeded"?"留言空間已滿":"發言失敗，請再試一次"); return false; }
+  } else { comments.unshift({id:"l"+Date.now(), ...c}); render(); }
+  return true;
+}
+
+/* ============ 主持人動作 ============ */
+function settle(force){
+  const st = STAGES[S.stage]; if(!st || !st.vote) return;
+  const c = tally(); let k = force;
+  const total = Object.values(c).reduce((a,b)=>a+b,0);
+  if(!k){
+    const sorted = Object.entries(c).sort((a,b)=>b[1]-a[1]);
+    if(!total){ toast("目前還沒有人投票：可以請大家投票，或由主持人直接裁定"); return; }
+    if(sorted[1] && sorted[1][1]===sorted[0][1]){ toast("票數相同！請主持人在下方直接裁定結果"); return; }
+    k = sorted[0][0];
+  }
+  const opt = st.vote.options.find(o=>o.k===k);
+  const entry = {stage:S.stage, round:S.round, choice:k, label:opt.label, counts:c, total, forced:!!force, at:Date.now()};
+  if(voters(S.stage)){ const op=tally(S,true); if(Object.values(op).some(x=>x>0)) entry.opinion=op; }
+  saveState({...S, stage:opt.next, round:S.round+1, history:[...S.history, entry], timerEnd:0});
+}
+function promulgate(){
+  saveState({...S, stage:"END_PASS", round:S.round+1, history:[...S.history, {stage:"s13", round:S.round, choice:"pub", label:"總統公布", counts:{}, total:0, at:Date.now()}], timerEnd:0});
+}
+function goBack(){
+  if(!S.history.length) return;
+  const h = [...S.history]; const last = h.pop();
+  saveState({...S, stage:last.stage, round:S.round+1, history:h, timerEnd:0});
+}
+function resetAll(){
+  if(!resetAll.armed){ resetAll.armed=true; toast("再按一次「重新開始」以確認（全部投票與討論將歸零）"); setTimeout(()=>resetAll.armed=false,4000); return; }
+  resetAll.armed=false;
+  saveState({...defaultState(), epoch:(S.epoch||1)+1, caseTitle:S.caseTitle});
+}
+function adjustManual(opt, d){
+  const key = voteKey(); const manual = JSON.parse(JSON.stringify(S.manual||{}));
+  // 只保留本 epoch
+  Object.keys(manual).forEach(x=>{ if(!x.startsWith(S.epoch+":")) delete manual[x]; });
+  manual[key] = manual[key]||{}; manual[key][opt] = Math.max(0,(+manual[key][opt]||0)+d);
+  saveState({...S, manual});
+}
+function revote(){
+  const manual = JSON.parse(JSON.stringify(S.manual||{})); delete manual[voteKey()];
+  saveState({...S, round:S.round+1, manual});
+  toast("已清空本階段票數，請大家重新投票");
+}
+let purging=false;
+async function purgeRoster(){
+  if(!purgeRoster.armed){ purgeRoster.armed=true; toast("再按一次「清空參與名單」以確認"); setTimeout(()=>purgeRoster.armed=false,4000); return; }
+  purgeRoster.armed=false;
+  if(mode!=="online"){ ballots={}; if(me.nick) saveProfile(); render(); toast("已清空參與名單"); return; }
+
+  purging=true; let ok=0;
+  for(const id of Object.keys(ballots)){ if(id===me.uid) continue; try{ await db.doc("ballots/"+id).delete(); ok++; }catch(e){} }
+  try{ await db.doc("ballots/"+me.uid).delete(); }catch(e){}
+  purging=false; if(me.nick) saveProfile();
+  toast(`已清空參與名單（移除 ${ok} 人）`);
+}
+function setTimer(min){ saveState({...S, timerEnd: min ? Date.now()+min*60000 : 0}); }
+
+/* ============ 狀態套用與動畫觸發 ============ */
+function applyState(n){
+  const prev = S; S = n;
+  if(stateLoaded && prev.epoch!==n.epoch && me.nick && (me.uid || useRelay)) setTimeout(saveProfile, 300+Math.random()*1500);
+  if(stateLoaded && prev.stage!==n.stage && prev.epoch===n.epoch) runTransition(prev, n);
+  stateLoaded = true;
+  render();
+}
+
+/* ============ 繪製 ============ */
+function render(){
+  renderHeader(); renderRail(); renderChamber(); renderStage(); renderFeed(); renderHist();
+}
+function renderBanner(){
+  const el=$("#banner"); let html="", cls="";
+  if(window.__setupNeeded && mode==="local"){
+    cls="info";
+    html=`<b>⚙️ 尚未設定 Firebase</b>：目前是單機模式（只有這台裝置）。請依教學把 Firebase 設定貼進 index.html 的「設定區」，同學就能用手機一起投票與討論。`;
+  } else if(mode==="offline"){
+    html=`<b>⚠️ 連不上全班審議室</b>，投票和發言暫時送不出去。請確認：
+      <ol><li>手機或電腦<b>有連上網路</b>（學校 Wi-Fi 若擋住，可改用行動網路）</li>
+      <li>完成後<b>重新整理</b>這個網頁</li></ol>
+      ${presenter?`<button class="btn small" data-act="go-local">主持人：改用單機投影模式（現場舉手計票）</button>`:""}`;
+  } else if(mode==="online" && useRelay){
+    cls="info";
+    html = hostOnline() ? `你的權限是「檢視」，投票與發言會<b>透過主持人的畫面轉送</b>給全班，請保持網頁開啟。`
+      : `你的權限是「檢視」，投票與發言需要<b>透過主持人轉送</b>，但主持人目前不在線上。主持人打開網頁後，你的票和發言會自動送出。`;
+  } else if(mode==="online" && !me.uid){
+    cls="info"; html="你目前以旁觀身分檢視（沒有登入身分），可以看到全班進度，但無法投票與發言。";
+  }
+  el.className="banner "+cls; el.hidden=!html; el.innerHTML=html;
+}
+function renderHeader(){
+  renderBanner();
+  $("#caseTitle").textContent = S.caseTitle || "（未命名案）";
+  $("#caseEdit").hidden = !presenter;
+  const inp = $("#caseInput"); if(document.activeElement!==inp) inp.value = S.caseTitle||"";
+  $("#hostToggle").checked = presenter;
+  $("#meText").textContent = me.nick ? `${me.nick}・${roleName(me.role)}` : "加入審議";
+  const chip=$("#connChip"); chip.className="chip "+(mode==="online"?"ok":mode==="local"?"warn":"");
+  const n = active().length;
+  chip.className="chip "+(mode==="online"?"ok":mode==="connecting"?"":"warn");
+  $("#connText").textContent = mode==="online" ? `全班審議室・${n} 人加入${useRelay?"（轉送）":""}` : mode==="local" ? "單機模式（投影＋舉手計票）" : mode==="offline" ? "未連上審議室" : (slowConn?"連線較慢，請稍候…":"連線中…");
+}
+function renderRail(){
+  const visited = new Set(S.history.map(h=>h.stage));
+  const curPhase = phaseOf(S.stage);
+  $("#rail").innerHTML = PHASES.map(p=>`
+    <div class="phase ${p.id===curPhase?"active":""}">
+      <h3 class="serif">${p.name}<small>${p.sub}</small></h3>
+      <div class="nodes">${p.stages.map(k=>{
+        const st=STAGES[k]; const cls = k===S.stage?"cur":(visited.has(k)?"done":"");
+        return `<div class="node ${cls}"><div class="b">${cls==="done"?"✓":st.no}</div>${st.short}</div>`;
+      }).join("")}</div>
+    </div>`).join("");
+}
+
+/* 議場 */
+const CX=210, CY=200;
+const SEAT_POS = (()=>{
+  const rows=[66,84,102,120,138,156,174]; const sum=rows.reduce((a,b)=>a+b,0);
+  const cnt=rows.map(r=>Math.floor(SEATS*r/sum)); let rem=SEATS-cnt.reduce((a,b)=>a+b,0);
+  for(let i=rows.length-1; rem>0; i=(i-1+rows.length)%rows.length, rem--) cnt[i]++;
+  const out=[]; rows.forEach((r,i)=>{ for(let j=0;j<cnt[i];j++){ const a=Math.PI*(1-(j+0.5)/cnt[i]); out.push({x:CX+r*Math.cos(a), y:CY-r*Math.sin(a), a}); } });
+  return out.sort((p,q)=>q.a-p.a);
+})();
+function chamberSVG(id){
+  return `<path d="M ${CX-190} ${CY} A 190 190 0 0 1 ${CX+190} ${CY}" fill="none" stroke="#d9cfbb" stroke-width="1"/>
+  <rect x="${CX-34}" y="${CY-24}" width="68" height="20" rx="4" fill="#24324f"/><text x="${CX}" y="${CY-10}" text-anchor="middle" font-size="10" fill="#fff" font-family="Noto Sans TC">主席台</text>
+  ${SEAT_POS.map((p,i)=>`<circle class="seat" data-i="${i}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="5.3" fill="#e3dccd"/>`).join("")}`;
+}
+function paintSeats(svg, alloc, upto=SEATS){
+  const cs = svg.querySelectorAll(".seat"); let idx=0; const fills=[];
+  alloc.forEach((n,oi)=>{ for(let j=0;j<n;j++) fills[idx++]=OPT_HEX[oi]; });
+  cs.forEach((c,i)=>c.setAttribute("fill", i<upto && fills[i] ? fills[i] : "#e3dccd"));
+}
+function renderChamber(){
+  const show = LY_STAGES.includes(S.stage);
+  $("#chamberCard").hidden = !show;
+  if(!show) return;
+  const svg=$("#chamberSvg"); if(!svg.dataset.built){ svg.innerHTML=chamberSVG(); svg.dataset.built=1; }
+  const st=STAGES[S.stage]; const c=tally(); const alloc=allocSeats(c, st.vote.options);
+  paintSeats(svg, alloc);
+  $("#chamberLegend").innerHTML = st.vote.options.map((o,i)=>`<span><i style="background:${OPT_HEX[i]}"></i>${esc(o.label)} ${alloc[i]} 席</span>`).join("") +
+    (st.vote.threshold?`<span><b>門檻：${st.vote.threshold} 席</b></span>`:"");
+}
+
+function renderStage(){
+  const el=$("#stageCard");
+  if(isEnd(S.stage)){ el.innerHTML = endHTML(); return; }
+  const st=STAGES[S.stage]; const role=ROLES.find(r=>r.k===me.role);
+  const c=tally(); const total=Object.values(c).reduce((a,b)=>a+b,0);
+  const op=tally(S,true); const opTotal=Object.values(op).reduce((a,b)=>a+b,0);
+  const vs=voters(S.stage); const iCan = !me.role || canVoteRole(me.role);
+  const nVoters = vs ? active().filter(b=>vs.includes(b.role)).length : null;
+  const voterBox = vs ? `<div class="voterbox ${iCan?"yes":"no"}"><b>🗳️ ${VOTER_NOTE[S.stage]||"法案已進入立法院：本階段由立法委員表決（執政黨立委、在野黨立委）"}</b>${nVoters!==null?`<span>目前 ${nVoters} 位有表決權者在線</span>`:""}
+      <div>${!me.role?"":iCan?`你是 <b>${roleName(me.role)}</b>，你的票會計入正式表決。`:`你是 <b>${roleName(me.role)}</b>，沒有表決權。你可以在討論區發言（遊說、陳情、提供意見），或按下方選項表達「場外民意」，<b>不計入</b>正式表決。`}</div></div>` : "";
+  const myVote = (useRelay ? myRelay.votes[voteKey()] : null) || (me.uid && ballots[me.uid] && ballots[me.uid].votes ? ballots[me.uid].votes[voteKey()] : null);
+  const manual = (S.manual||{})[voteKey()]||{};
+  const loopNote = S.history.some(h=>h.stage===S.stage) ? `<span class="tag" style="margin-left:6px">第 ${S.history.filter(h=>h.stage===S.stage).length+1} 次審議</span>`:"";
+  el.innerHTML = `
+    <div class="stage-head">
+      <div>
+        <div class="stage-no">STEP ${st.no} / 13 ・ ${PHASES.find(p=>p.id===st.phase).name}${loopNote}</div>
+        <h2 class="serif">${st.title}</h2>
+        <div class="actors">${st.actors.map(a=>`<span class="actor">${a}</span>`).join("")}</div>
+      </div>
+      ${S.timerEnd>Date.now()?`<span class="timer" id="timer">--:--</span>`:""}
+    </div>
+    <p class="desc">${st.desc}</p>
+    <div class="book">${st.book}${st.law?`<div class="law">${st.law}</div>`:""}</div>
+    <div class="prompts"><h4>💬 討論題</h4><ol>${st.prompts.map(p=>`<li>${p}</li>`).join("")}</ol>
+      ${role?`<div class="rolehint"><b>你的角色：${role.name}</b>　${role.hint}</div>`:`<div class="rolehint">點右上角「加入審議」選一個角色，從該角色的立場參與討論與投票。</div>`}
+    </div>
+    ${st.vote?`
+    <div class="vote">
+      <div class="q">${st.vote.q}</div>${voterBox}
+      <div class="opts">${st.vote.options.map((o,i)=>{
+        const n=c[o.k]||0; const pct= total? Math.round(n/total*100):0;
+        return `<button class="opt ${myVote===o.k?"mine":""} ${iCan?"":"opinion"}" data-act="vote" data-k="${o.k}">
+          <span class="bar" style="width:${pct}%;background:${OPT_HEX[i]}"></span>
+          <span class="sw" style="background:${OPT_HEX[i]}"></span>
+          <span class="lbl">${esc(o.label)}${o.sub?`<small>${esc(o.sub)}</small>`:""}</span>
+          <span class="n">${n}${vs&&opTotal?`<small class="opn">民意 ${op[o.k]||0}</small>`:""}</span></button>`;}).join("")}</div>
+      <div class="votemeta"><span>${vs?"正式表決":"共"} ${total} 票${Object.values(manual).some(v=>v>0)?"（含現場舉手）":""}${vs&&opTotal?`・場外民意 ${opTotal} 人表態（不計入）`:""}・再按一次可收回</span><span>${myVote?(iCan?"✓ 你已投票":"✓ 你已表態（不計入）"):(iCan?"尚未投票":"尚未表態")}</span></div>
+    </div>`:`
+    <div class="vote"><div class="q">法律案已完成立法程序，等待總統公布。</div>
+      <p style="margin:0;color:var(--ink2);font-size:14px">${presenter?"討論完畢後，按下方「總統公布」完成最後一步。":"等待主持人執行公布。"}</p></div>`}
+    ${presenter?hostHTML(st, c):""}`;
+  tickTimer();
+}
+function hostHTML(st, c){
+  const manual=(S.manual||{})[voteKey()]||{};
+  const vs=voters(S.stage);
+  return `<div class="host"><h5>主持人控制台</h5>
+    ${st.vote?`
+    <div class="row"><button class="btn primary" data-act="settle">⚖️ 結算投票，依多數決進入下一步</button></div>
+    <div class="row" style="font-size:13px;color:var(--ink2)">${vs?(S.stage==="s11"?"行政院代表舉手加票：":"立委舉手加票："):"現場舉手加票："}${st.vote.options.map(o=>`<span class="manual">${esc(o.label.slice(0,8))} <b>${manual[o.k]||0}</b><button data-act="man" data-k="${o.k}" data-d="-1">−</button><button data-act="man" data-k="${o.k}" data-d="1">＋</button></span>`).join("")}</div>
+    <div class="row" style="font-size:13px;color:var(--ink2)">主持人直接裁定：${st.vote.options.map(o=>`<button class="btn small" data-act="force" data-k="${o.k}">${esc(o.label)}</button>`).join("")}</div>`:
+    `<div class="row"><button class="btn seal" data-act="promulgate">🖋️ 總統公布</button></div>`}
+    <div class="row" style="font-size:13px;color:var(--ink2)">討論計時：<button class="btn small" data-act="timer" data-m="3">3 分</button><button class="btn small" data-act="timer" data-m="5">5 分</button><button class="btn small" data-act="timer" data-m="0">停止</button>
+      <span style="flex:1"></span><button class="btn small" data-act="back" ${S.history.length?"":"disabled"}>↶ 回上一步</button><button class="btn small" data-act="reset">重新開始</button></div>
+    <div class="row" style="font-size:13px;color:var(--ink2)">清空：${st.vote?`<button class="btn small" data-act="revote">本階段重新投票</button>`:""}<button class="btn small" data-act="purge">清空參與名單</button><span style="font-size:12px;color:var(--mute)">（清空後，還在線上的同學會自動重新加入）</span></div>
+  </div>`;
+}
+function rocDate(ts){ const d=new Date(ts||Date.now()); return `中華民國 ${d.getFullYear()-1911} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`; }
+function endHTML(){
+  const e=ENDS[S.stage]; const last=S.history[S.history.length-1]||{}; const t=esc(S.caseTitle||"本案");
+  let body="";
+  if(e.kind==="pass"){
+    const eff=new Date((last.at||Date.now())+2*86400000);
+    body=`<div class="decree paperup"><h2 class="serif">總統令</h2><div class="date">${rocDate(last.at)}</div>
+      <p>茲制定「${t}」，公布之。</p>
+      <div class="sign"><span>總　　統　（簽署）</span><span>行政院院長（副署）</span></div>
+      <div class="stamp stampbox">公布<br>施行</div></div>
+      <p class="outcome">依中央法規標準法第 13 條，自公布日起算至第三日（約 ${eff.getMonth()+1}/${eff.getDate()}）起發生效力。</p>`;
+  } else if(e.kind==="order"){
+    body=`<div class="decree paperup"><h2 class="serif">教育部令</h2><div class="date">${rocDate(last.at)}</div>
+      <p>訂定「${t.replace(/條例草案|法草案|草案/,"辦法")}」。</p>
+      <div class="sign"><span>部　長　（簽署）</span></div>
+      <div class="stamp stampbox">發布</div></div>
+      <p class="outcome">教育命令發布後，應即送立法院（中央法規標準法第 7 條）。不需經過三讀，但穩定性與強制性較法律低。</p>`;
+  } else {
+    body=`<div style="text-align:center;padding:20px 0 6px"><span class="stampbox" style="display:inline-block;font-size:30px;padding:10px 18px;border-color:var(--slate);color:var(--slate)">${S.stage==="END_WITHDRAW"?"撤回":"未通過"}</span>
+      <p class="outcome" style="margin-top:16px">「${t}」在「${esc((STAGES[last.stage]||{}).title||"")}」階段結束：${esc(last.label||"")}。</p></div>`;
+  }
+  const refl = e.kind==="pass"
+    ? ["回顧整個流程，哪一個階段對法案內容影響最大？","課本提到「教育立法過程人員參與不夠多元化與資訊不夠公開化」，我們的模擬有出現這個問題嗎？","法律公布後，教育部還需要哪些配套（子法、經費、宣導）？"]
+    : e.kind==="order"
+    ? ["改用命令發布，省下了哪些程序？失去了什麼（穩定性、強制性、民主正當性）？","這個政策真的不涉及人民權利義務嗎？會不會違反法律保留原則？"]
+    : ["法案失敗的關鍵原因是什麼？是內容、程序，還是政治？","若要重新提案，教育部應如何調整？（課本展望：教育法案的立法應有整體性與周詳性的規劃）"];
+  return `<div class="stage-no">審議結果</div><h2 class="serif" style="margin:2px 0 10px">${e.title}</h2>${body}
+    <div class="prompts"><h4>🔁 回顧討論</h4><ol>${refl.map(x=>`<li>${x}</li>`).join("")}</ol></div>
+    ${presenter?`<div class="host"><h5>主持人控制台</h5><div class="row"><button class="btn small" data-act="back">↶ 回上一步</button><button class="btn small" data-act="reset">重新開始</button><button class="btn small" data-act="replay">▶ 重播動畫</button></div></div>`:""}`;
+}
+function renderFeed(){
+  $("#tabCur").classList.toggle("on", feedMode==="cur"); $("#tabAll").classList.toggle("on", feedMode==="all");
+  const key=voteKey();
+  pendingMsgs = pendingMsgs.filter(m=>!comments.some(c=>c.id===m.id) && Date.now()-m.ts<15*60000);
+  const list = [...pendingMsgs.slice().reverse(), ...comments].filter(c=>c.epoch===S.epoch && (feedMode==="all" || c.key===key));
+  const ul=$("#feed"); ul.innerHTML="";
+  if(!list.length){ ul.innerHTML=`<li class="empty" style="border:none;background:none">${feedMode==="cur"?"這個階段還沒有人發言，搶頭香！":"還沒有討論紀錄"}</li>`; return; }
+  list.slice(0,200).forEach(c=>{
+    const li=document.createElement("li");
+    const who=document.createElement("div"); who.className="who";
+    const b=document.createElement("b"); b.textContent=c.nick||"某人"; who.appendChild(b);
+    const r=document.createElement("span"); r.className="tag"; r.textContent=roleName(c.role); who.appendChild(r);
+    if(c.stance){ const s=document.createElement("span"); s.className="tag "+c.stance; s.textContent={pro:"支持",con:"反對",q:"提問"}[c.stance]||""; who.appendChild(s); }
+    if(feedMode==="all" && STAGES[c.stage]){ const s=document.createElement("span"); s.textContent="・"+STAGES[c.stage].short; who.appendChild(s); }
+    if(c.pending){ const s=document.createElement("span"); s.className="tag q"; s.textContent="等待主持人轉送"; who.appendChild(s); }
+    const tx=document.createElement("div"); tx.className="txt"; tx.textContent=c.text||"";
+    li.append(who,tx); ul.appendChild(li);
+  });
+}
+function renderHist(){
+  const ol=$("#hist");
+  if(!S.history.length){ ol.innerHTML=`<li class="empty" style="display:block">尚未做出任何決定</li>`; return; }
+  ol.innerHTML = S.history.map(h=>{
+    const st=STAGES[h.stage]; const cnt = h.total?`<small>（${Object.entries(h.counts).map(([k,v])=>{const o=st.vote&&st.vote.options.find(x=>x.k===k);return `${o?o.label.slice(0,6):k} ${v}`;}).join("／")}）</small>`:"";
+    const opn = h.opinion ? `<small>｜場外民意：${Object.entries(h.opinion).map(([k,v])=>{const o=st.vote.options.find(x=>x.k===k);return `${o?o.label.slice(0,6):k} ${v}`;}).join("／")}</small>` : "";
+    return `<li><span class="k ${h.forced?"f":""}">${st.short}</span><span>${esc(h.label)}${h.forced?" <small>主持人裁定</small>":""} ${cnt}${opn}</span></li>`;
+  }).join("");
+}
+function tickTimer(){
+  const el=$("#timer"); if(!el) return;
+  const left=Math.max(0,S.timerEnd-Date.now()); const m=Math.floor(left/60000), s=Math.floor(left%60000/1000);
+  el.textContent=`⏱ ${m}:${String(s).padStart(2,"0")}`; el.classList.toggle("low", left<30000);
+  if(left<=0){ el.textContent="⏱ 時間到"; }
+}
+setInterval(tickTimer, 1000);
+
+/* ============ 動畫 ============ */
+let animQ = Promise.resolve();
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+let skipAnim = null;
+function overlay(html){ const ov=$("#ov"); $("#ovStage").innerHTML=`<button class="btn small ghost skip" data-act="skip">略過 ✕</button>`+html; ov.classList.add("on"); }
+function closeOv(){ $("#ov").classList.remove("on"); }
+function waitOrSkip(ms){ return new Promise(r=>{ if(!$("#ov").classList.contains("on")) return r("skip"); const t=setTimeout(r,ms); skipAnim=()=>{clearTimeout(t); r("skip");}; }); }
+function queue(fn){ animQ = animQ.then(fn).catch(()=>{}).then(()=>{ skipAnim=null; }); }
+
+const BLDG = {
+  "行政院":`<svg viewBox="0 0 110 100"><rect x="10" y="40" width="90" height="52" fill="#fffdf8" stroke="#24324f" stroke-width="2"/><path d="M5 42 L55 12 L105 42Z" fill="#24324f"/>${[22,40,58,76].map(x=>`<rect x="${x}" y="52" width="10" height="40" fill="#d9cfbb"/>`).join("")}</svg>`,
+  "立法院":`<svg viewBox="0 0 110 100"><rect x="12" y="46" width="86" height="46" fill="#fffdf8" stroke="#24324f" stroke-width="2"/><path d="M22 46 A33 30 0 0 1 88 46Z" fill="#a7852f"/>${[22,38,54,70,86].map(x=>`<rect x="${x-3}" y="56" width="6" height="36" fill="#d9cfbb"/>`).join("")}<rect x="6" y="88" width="98" height="6" fill="#24324f"/></svg>`,
+  "總統府":`<svg viewBox="0 0 110 100"><rect x="8" y="50" width="94" height="42" fill="#fffdf8" stroke="#24324f" stroke-width="2"/><rect x="44" y="12" width="22" height="80" fill="#fffdf8" stroke="#24324f" stroke-width="2"/><path d="M40 14 L55 2 L70 14Z" fill="#b8322a"/>${[16,28,76,88].map(x=>`<rect x="${x}" y="60" width="7" height="12" fill="#d9cfbb"/>`).join("")}</svg>`
+};
+function envelope(from, to, word, title, sub){
+  return async()=>{
+    overlay(`<h3 class="serif">${title}</h3><div class="s">${sub}</div>
+      <div class="travel"><div class="bldg l">${BLDG[from]}${from}</div><div class="bldg r">${BLDG[to]}${to}</div>
+      <div class="flyx"><div class="flyy"><div class="letter"><span>${word}</span></div></div></div></div>`);
+    await waitOrSkip(3000); closeOv(); await sleep(150);
+  };
+}
+function floorVote(entry){
+  return async()=>{
+    const st=STAGES[entry.stage]; const opts=st.vote.options;
+    let counts=entry.counts;
+    if(!entry.total){ counts={}; opts.forEach(o=>counts[o.k]= o.k===entry.choice?70:43/(opts.length-1)); }
+    const alloc=allocSeats(counts, opts);
+    const passWords = {s6:{cmte:"交付審查",direct:"逕付二讀",reject:"不予審議"}, s9:{pass:"二讀通過",recmte:"重付審查",withdraw:"撤回"}, s10:{yes:"三讀通過",no:"未通過"}, s12:{keep:"維持原決議",drop:"不維持原決議"}};
+    const word=(passWords[entry.stage]||{})[entry.choice]||entry.label;
+    const fail=["reject","withdraw","no","drop"].includes(entry.choice);
+    overlay(`<h3 class="serif">立法院院會・${st.title.replace(/：.*/,"")}</h3><div class="s">${esc(st.vote.q.replace("★ ",""))}${entry.forced&&!entry.total?"（主持人裁定，席次為示意）":"（立委同學投票換算 113 席）"}</div>
+      <div class="ovchamber" id="ovCh"><svg viewBox="0 0 420 212">${chamberSVG()}</svg>
+        <svg class="gavel" id="gavel" viewBox="0 0 120 60"><rect x="24" y="25" width="94" height="8" rx="4" fill="#9a6232"/><rect x="4" y="6" width="22" height="46" rx="5" fill="#7a4a22"/><rect x="4" y="12" width="22" height="4" fill="#a7852f"/><rect x="4" y="42" width="22" height="4" fill="#a7852f"/></svg>
+        <div class="ring" id="ring"></div></div>
+      <div class="tallyline" id="tl">${opts.map((o,i)=>`<span style="color:${OPT_HEX[i]}">${esc(o.label.replace(/，.*/,""))} <b data-i="${i}">0</b> 席</span>`).join("")}</div>
+      ${st.vote.threshold?`<div class="s">門檻：全體立委二分之一以上（${st.vote.threshold} 席）</div>`:""}
+      <div class="result ${fail?"fail":""}" id="res"><span class="stampbox">${esc(word)}</span></div>`);
+    const svg=$("#ovCh svg"); const bs=[...document.querySelectorAll("#tl b")];
+    const fills=[]; alloc.forEach((n,oi)=>{ for(let j=0;j<n;j++) fills.push(oi); });
+    const per = 1500/SEATS; const shown=opts.map(()=>0); const cs=svg.querySelectorAll(".seat");
+    for(let i=0;i<fills.length;i++){
+      if(!$("#ov").classList.contains("on")) break;
+      if(skipAnim && skipAnim.done) break;
+      cs[i].setAttribute("fill", OPT_HEX[fills[i]]); shown[fills[i]]++; bs[fills[i]].textContent=shown[fills[i]];
+      if(i%3===0) await sleep(per*3);
+    }
+    cs.forEach((c,i)=>{ if(fills[i]!==undefined) c.setAttribute("fill", OPT_HEX[fills[i]]); }); alloc.forEach((n,i)=>bs[i].textContent=n);
+    await sleep(350);
+    $("#gavel").classList.add("hit"); await sleep(450);
+    $("#ring").classList.add("go"); $("#ovCh").classList.add("shake"); $("#res").classList.add("go");
+    await waitOrSkip(2300); closeOv(); await sleep(150);
+  };
+}
+function sealAnim(){
+  return async()=>{
+    const t=esc(S.caseTitle||"本案");
+    overlay(`<h3 class="serif">總統公布</h3><div class="s">經行政院院長副署，公布施行</div>
+      <div class="decree paperup" style="margin-top:16px;text-align:left"><h2 class="serif">總統令</h2><div class="date">${rocDate()}</div>
+      <p>茲制定「${t}」，公布之。</p><div class="sign"><span>總　　統　（簽署）</span><span>行政院院長（副署）</span></div>
+      <div class="bigseal stampbox" id="seal" style="font-size:24px">公布<br>施行</div></div>`);
+    await sleep(1100); $("#seal").classList.add("go"); await sleep(220); $("#ovStage").classList.add("shake");
+    await waitOrSkip(2600); $("#ovStage").classList.remove("shake"); closeOv();
+  };
+}
+function failAnim(word){
+  return async()=>{
+    overlay(`<h3 class="serif">審議終止</h3><div class="s">${esc(S.caseTitle)}</div><div class="result fail" id="res" style="margin:30px 0 10px"><span class="stampbox">${word}</span></div>`);
+    await sleep(200); $("#res").classList.add("go"); await waitOrSkip(2200); closeOv();
+  };
+}
+function runTransition(prev, n){
+  if(n.history.length < prev.history.length) return; // 回上一步不播放
+  const last = n.history[n.history.length-1];
+  if(last && FLOOR_VOTES.includes(last.stage) && last.choice!=="pub") queue(floorVote(last));
+  if(phaseOf(prev.stage)==="A" && phaseOf(n.stage)==="B") queue(envelope("行政院","立法院","函","行政院函請立法院審議","法律案送達立法院，進入程序委員會"));
+  if(prev.stage==="s10" && n.stage==="s11") queue(envelope("立法院","總統府","咨","立法院咨請總統公布","同時函送行政院"));
+  if(prev.stage==="s11" && n.stage==="s12") queue(envelope("行政院","立法院","覆","行政院移請立法院覆議","經總統核可，立法院應於 15 日內作成決議"));
+  if(prev.stage==="s12" && n.stage==="s13") queue(envelope("立法院","總統府","咨","覆議維持原決議","行政院院長應即接受，咨請總統公布"));
+  if(n.stage==="END_PASS") queue(sealAnim());
+  if(n.stage==="END_FAIL" && !(last && FLOOR_VOTES.includes(last.stage))) queue(failAnim("未通過"));
+  if(n.stage==="END_ORDER") queue(async()=>{
+    overlay(`<h3 class="serif">教育部發布命令</h3><div class="s">不經立法院三讀，發布後送立法院查照</div><div class="result" id="res" style="margin:30px 0 10px"><span class="stampbox">發布</span></div>`);
+    await sleep(200); $("#res").classList.add("go"); await waitOrSkip(2200); closeOv();
+  });
+}
+
+/* ============ 事件 ============ */
+document.addEventListener("click", e=>{
+  const b=e.target.closest("[data-act]"); if(!b) return;
+  const a=b.dataset.act;
+  if(a==="vote") castVote(b.dataset.k);
+  else if(a==="settle") settle();
+  else if(a==="force") settle(b.dataset.k);
+  else if(a==="man") adjustManual(b.dataset.k, +b.dataset.d);
+  else if(a==="promulgate") promulgate();
+  else if(a==="back") goBack();
+  else if(a==="reset") resetAll();
+  else if(a==="revote") revote();
+  else if(a==="go-local") goLocal();
+  else if(a==="purge") purgeRoster();
+  else if(a==="timer") setTimer(+b.dataset.m);
+  else if(a==="skip"){ if(skipAnim){ skipAnim.done=true; skipAnim(); } closeOv(); }
+  else if(a==="feed-cur"){ feedMode="cur"; renderFeed(); }
+  else if(a==="feed-all"){ feedMode="all"; renderFeed(); }
+  else if(a==="copy-log") copyLog();
+  else if(a==="close-join") $("#joinModal").classList.remove("on");
+  else if(a==="replay"){ if(S.stage==="END_PASS") queue(sealAnim()); else { const l=S.history[S.history.length-1]; if(l && FLOOR_VOTES.includes(l.stage)) queue(floorVote(l)); } }
+});
+$("#meChip").addEventListener("click", openJoin);
+$("#hostToggle").addEventListener("change", e=>{
+  if(e.target.checked && window.HOST_PIN){
+    const pin = window.prompt("請輸入主持人密碼");
+    if(pin!==String(window.HOST_PIN)){ e.target.checked=false; toast("主持人密碼不正確"); return; }
+  }
+  presenter=e.target.checked; saveLocal(); render();
+});
+$("#caseInput").addEventListener("change", e=>{ const v=e.target.value.trim().slice(0,80); if(v && v!==S.caseTitle) saveState({...S, caseTitle:v}); });
+$("#casePreset").innerHTML += PRESETS.map(p=>`<option>${esc(p)}</option>`).join("");
+$("#casePreset").addEventListener("change", e=>{ if(e.target.value){ saveState({...S, caseTitle:e.target.value}); e.target.value=""; } });
+$("#compose").addEventListener("submit", async e=>{
+  e.preventDefault(); const ta=$("#msg"); const t=ta.value.trim(); if(!t) return;
+  const stance=(document.querySelector('input[name="st"]:checked')||{}).value||"";
+  const btn=e.target.querySelector("button[type=submit]"); btn.disabled=true;
+  const ok = await postComment(t, stance); btn.disabled=false;
+  if(ok!==false){ ta.value=""; feedMode="cur"; renderFeed(); }
+});
+$("#msg").addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.metaKey||e.ctrlKey)) $("#compose").requestSubmit(); });
+
+$("#roleList").innerHTML = ROLES.map(r=>`<label><input type="radio" name="role" value="${r.k}"><b>${r.name}</b><small>${r.d}</small></label>`).join("");
+function openJoin(){
+  $("#nickInput").value=me.nick||"";
+  const r=document.querySelector(`input[name=role][value="${me.role}"]`); if(r) r.checked=true;
+  $("#joinModal").classList.add("on"); setTimeout(()=>$("#nickInput").focus(),50);
+}
+$("#joinForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const nick=$("#nickInput").value.trim().slice(0,16); if(!nick) return;
+  const role=(document.querySelector("input[name=role]:checked")||{}).value;
+  if(!role){ toast("請選一個角色"); return; }
+  if(me.role && role!==me.role && !presenter && (voters(S.stage) || phaseOf(S.stage)!=="A")){ toast("法案送出行政院後就不能更換角色了（請主持人協助）"); return; }
+  me.nick=nick; me.role=role; $("#joinModal").classList.remove("on"); saveProfile();
+  toast(`歡迎 ${nick}（${roleName(role)}）加入審議`);
+});
+
+function copyLog(){
+  const lines=[`【${S.caseTitle}】教育政策合法化模擬審議紀錄`,""];
+  S.history.forEach(h=>{ const st=STAGES[h.stage]; lines.push(`■ ${st.title}：${h.label}${h.total?`（${Object.entries(h.counts).map(([k,v])=>{const o=st.vote&&st.vote.options.find(x=>x.k===k);return `${o?o.label:k} ${v} 票`;}).join("、")}）`:""}${h.forced?"［主持人裁定］":""}${h.opinion?`；場外民意（不計入）：${Object.entries(h.opinion).map(([k,v])=>{const o=st.vote.options.find(x=>x.k===k);return `${o?o.label:k} ${v}`;}).join("、")}`:""}`); });
+  if(isEnd(S.stage)) lines.push(`→ 結果：${ENDS[S.stage].title}`);
+  lines.push("","— 討論 —");
+  comments.filter(c=>c.epoch===S.epoch).slice().reverse().forEach(c=>lines.push(`[${(STAGES[c.stage]||{}).short||""}] ${c.nick}（${roleName(c.role)}）${c.stance?"〔"+({pro:"支持",con:"反對",q:"提問"}[c.stance])+"〕":""}：${c.text}`));
+  const txt=lines.join("\n");
+  (navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(txt) : Promise.reject()).then(()=>toast("已複製審議紀錄，可貼到簡報或筆記")).catch(()=>toast("瀏覽器不允許複製"));
+}
+
+/* ============ 連線 ============ */
+function setMode(m){ mode=m; render(); }
+let slowConn=false;
+async function init(){
+  render();
+  const use = window.claude && typeof window.claude.use==="function" ? window.claude.use.bind(window.claude) : null;
+  if(!use){ if(window.__loadFailed){ mode="offline"; render(); } else goLocal(); return; }
+  const timer=setTimeout(()=>{ if(mode==="connecting"){ slowConn=true; render(); } }, 10000);
+  let d=null,u=null,r=null;
+  try{ [d,u,r]=await Promise.all([use("db"), use("user"), use("room")]); }catch(e){}
+  userApi=u; room=r;
+  if(!d){ clearTimeout(timer); mode="offline"; render(); return; }
+  db=d;
+  try{ me.uid = u ? await u.id() : null; }catch(e){ me.uid=null; }
+  try{ isOwnerFlag = u ? await u.isOwner() : false; }catch(e){}
+  if(isOwnerFlag && !localStorage.getItem("legit-me")){ presenter=true; saveLocal(); }
+  let cw=null; try{ cw = u ? await u.can("data.write") : null; }catch(e){}
+  if(cw===false || !me.uid){ canWrite=false; if(room && !isOwnerFlag) useRelay=true; }
+  if(room){
+    try{
+      room.onPeers(ch=>{
+        if(isOwnerFlag){ [...ch.joined, ...ch.updated].forEach(relayPeer); }
+        renderBanner();
+      }, ()=>{ if(useRelay){ room=null; useRelay=false; render(); } });
+      pushPresence();
+    }catch(e){}
+  }
+  stateRef = db.doc("session/state");
+  let gotState=false;
+  stateRef.onSnapshot(snap=>{
+    clearTimeout(timer); mode="online"; slowConn=false;
+    if(snap.exists){ const d=snap.data(); applyState({...defaultState(), ...JSON.parse(JSON.stringify(d))}); }
+    else if(!gotState){ stateLoaded=true; render(); }
+    gotState=true;
+  }, err=>{ clearTimeout(timer); if(!gotState){ mode="offline"; } toast("與全班審議室的連線中斷，請重新整理"); render(); });
+  db.collection("ballots").onSnapshot(snap=>{
+    const nb={}; snap.docs.forEach(d=>{ nb[d.id]=d.data(); });
+    const hadMine = me.uid && ballots[me.uid]; ballots=nb;
+    if(!useRelay && hadMine && !nb[me.uid] && me.nick && !purging) setTimeout(saveProfile, 500+Math.random()*2000);
+    if(me.uid && nb[me.uid] && !me.nick){ me.nick=nb[me.uid].nick||""; me.role=nb[me.uid].role||""; saveLocal(); }
+    render();
+  }, ()=>{});
+  db.collection("comments").orderBy("ts","desc").limit(500).onSnapshot(snap=>{
+    comments=snap.docs.map(d=>({id:d.id, ...d.data()})); renderFeed();
+    if(isOwnerFlag && room){ try{ room.peers().forEach(relayPeer); }catch(e){} }
+  }, ()=>{});
+  if(!me.uid && !useRelay){ toast("目前以旁觀身分檢視（沒有登入身分，無法投票）"); }
+  else if(!me.nick) setTimeout(openJoin, 600);
+}
+function goLocal(){
+  if(mode==="local") return;
+  mode="local"; me.uid = me.uid || "local"; stateLoaded=true; canWrite=true;
+  try{ if(!("presenter" in JSON.parse(localStorage.getItem("legit-me")||"{}"))) presenter=true; }catch(e){ presenter=true; }
+  render();
+  if(!me.nick) setTimeout(openJoin, 400);
+}
+let __started=false;
+window.startApp = ()=>{ if(__started) return; __started=true; init(); };
+setTimeout(()=>{ if(!__started){ __started=true; mode="offline"; window.__loadFailed=true; render(); } }, 12000);
+</script>
+<script type="module">
+/* ===== Firebase 連線（不用登入，每支手機自動產生一個匿名代號）===== */
+const cfg = window.FIREBASE_CONFIG || {};
+if(!cfg.projectId || /貼上/.test(cfg.projectId)){ window.__setupNeeded = true; window.startApp(); }
+else {
+  try{
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+    const F = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+    const fs = F.getFirestore(initializeApp(cfg));
+    const ROOM = (location.hash.slice(1).replace(/[^A-Za-z0-9_-]/g,"") || "main").slice(0,40);
+    const base = "rooms/"+ROOM+"/";
+    const wrap = s => ({ id:s.id, exists: typeof s.exists==="function" ? s.exists() : true, data:()=>s.data(), metadata:s.metadata });
+    const err = e => ({ code: e && e.code==="permission-denied" ? "invalid_argument" : "unavailable", message: String(e && e.message || e) });
+    const mkDoc = path => { const r = F.doc(fs, base+path); return {
+      id:r.id, path,
+      set: d => F.setDoc(r, d).catch(e=>{ throw err(e); }),
+      update: d => F.updateDoc(r, d).catch(e=>{ throw err(e); }),
+      delete: () => F.deleteDoc(r).catch(e=>{ throw err(e); }),
+      get: async () => wrap(await F.getDoc(r)),
+      onSnapshot: (n, e) => F.onSnapshot(r, s => n(wrap(s)), x => e && e(err(x)))
+    }; };
+    const mkColl = (path, cons=[]) => { const c = F.collection(fs, base+path); return {
+      path,
+      doc: id => mkDoc(path+"/"+(id || F.doc(c).id)),
+      add: d => F.addDoc(c, d).catch(e=>{ throw err(e); }),
+      orderBy: (f, dir) => mkColl(path, [...cons, F.orderBy(f, dir||"asc")]),
+      limit: n => mkColl(path, [...cons, F.limit(n)]),
+      onSnapshot: (n, e) => F.onSnapshot(cons.length ? F.query(c, ...cons) : c,
+        s => n({ docs:s.docs.map(wrap), size:s.size, empty:s.empty, docChanges:()=>[] }), x => e && e(err(x)))
+    }; };
+    let uid = null;
+    try{ uid = localStorage.getItem("legit-uid"); if(!uid){ uid = "u"+Date.now().toString(36)+Math.random().toString(36).slice(2,10); localStorage.setItem("legit-uid", uid); } }
+    catch(e){ uid = "u"+Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
+    const dbApi = { doc: mkDoc, collection: p => mkColl(p) };
+    const userApi = { id: async()=>uid, isOwner: async()=>false, can: async()=>true };
+    window.claude = { use: async name => name==="db" ? dbApi : name==="user" ? userApi : null };
+    window.__firebase = true;
+  }catch(e){ console.error(e); window.__loadFailed = true; }
+  window.startApp();
+}
+</script>
+</body>
+</html>
